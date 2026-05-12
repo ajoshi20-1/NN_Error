@@ -747,13 +747,13 @@ def distance_acq_fn(distances, beta = 0.5, lambda_ = 1, optimize = "custom_fn", 
     
     if optimize == "minimize":
         
-        aq_vals[exclude_indices] = 2
+        acq_vals[exclude_indices] = 2
         aq_ind = np.argsort(acq_vals)
         
 
     elif optimize == "maximize":
         
-        aq_vals[exclude_indices] = -1
+        acq_vals[exclude_indices] = -1
         aq_ind = np.argsort(acq_vals)[::-1]
 
     elif optimize == "custom_fn":
