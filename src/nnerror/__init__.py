@@ -1,4 +1,4 @@
-from . import networks, plot_functions, training_functions
+from . import networks, plot_functions, training_functions, utils
 from .plot_functions import (
 	cluster_latent_space,
 	plot_embedding,
@@ -6,6 +6,7 @@ from .plot_functions import (
 	plot_latent_distribution,
 	plot_latent_space,
 	plot_only_training_loss,
+	plot_scale_slider,
 	plot_spectra,
 	plot_training_loss,
 )
@@ -34,17 +35,24 @@ from .training_functions import (
 	train_model_ensemble,
 	vae_loss_mse,
 )
+from .utils import (
+	append_multiscale_data,
+	edges_zeroed_image,
+	interpolated_center_crop,
+)
 
 __all__ = [
 	"networks",
 	"plot_functions",
 	"training_functions",
+	"utils",
 	"cluster_latent_space",
 	"plot_embedding",
 	"plot_error_prediction",
 	"plot_latent_distribution",
 	"plot_latent_space",
 	"plot_only_training_loss",
+	"plot_scale_slider",
 	"plot_spectra",
 	"plot_training_loss",
 	"ELBOLoss",
@@ -70,4 +78,7 @@ __all__ = [
 	"train_model",
 	"train_model_ensemble",
 	"vae_loss_mse",
+	"append_multiscale_data",
+	"edges_zeroed_image",
+	"interpolated_center_crop",
 ]

@@ -67,6 +67,7 @@ class FNOEncoder(nn.Module):
         n_layers=4,
         mlp_hidden=None,
     ):
+        """Initialize FNOEncoder."""
         super().__init__()
 
         if mlp_hidden is None:
@@ -160,6 +161,7 @@ class FNO_im2spec(nn.Module):
                  n_layers: int = 4,
                  mlp_hidden: int = None) -> None:
 
+        """Initialize FNO_im2spec."""
         super().__init__()
 
         self.ts = target_size
@@ -210,17 +212,20 @@ class FNO_im2spec(nn.Module):
         """Predict spectra from image"""
         with torch.no_grad():
             return self.forward(x)
-        
 
 
-    
+
+
 class Encoder_Wrapper(nn.Module):
-    
+
+    """Wrapper that exposes an encoder with a decoder-style interface."""
     def __init__(self, encoder_fn):
+        """Initialize Encoder_Wrapper."""
         super().__init__()
-        
+
         self.encoder_fn = encoder_fn
-        
+
     def forward(self, x):
-    
+
+        """Run the forward pass."""
         return self.encoder_fn(x)

@@ -10,53 +10,63 @@ from atomai.nets.blocks import ConvBlock as conv_block
 
 
 
-        
-        
+
+
 class Swa_Ensemble(nn.Module):
 
+    """Wrapper for an ensemble of stochastic weight averaged models."""
     def __init__(self, model_list):
+        """Initialize Swa_Ensemble."""
         super().__init__()
 
         self.models = model_list
-        
+
     def forward(self, x):
+        """Run the forward pass."""
         pred = [model(x) for model in self.models]
         return pred
 
     def train(self):
+        """Set contained model modules to training mode."""
         [model.train() for model in self.models]
-    
+
     def eval(self):
+        """Set contained model modules to evaluation mode."""
         [model.eval() for model in self.models]
 
     def predict(self, x):
-        
+
+        """Run prediction for input tensors."""
         [model.eval() for model in self.models]
 
         with torch.no_grad():
-        
+
             return self.forward(x)
-    
+
     def to(self, device):
-        
+
+        """Move contained model modules to a device or dtype."""
         [model.to(device) for model in self.models]
-    
-    
-    
+
+
+
 class Encoder_Wrapper(nn.Module):
-    
+
+    """Wrapper that exposes an encoder with a decoder-style interface."""
     def __init__(self, encoder_fn):
+        """Initialize Encoder_Wrapper."""
         super().__init__()
-        
+
         self.encoder_fn = encoder_fn
-        
+
     def forward(self, x):
-    
+
+        """Run the forward pass."""
         return self.encoder_fn(x)
-    
-    
-    
-    
+
+
+
+
 # class error_model(nn.Module):
 
 #     def __init__(self, in_dim):
@@ -64,7 +74,7 @@ class Encoder_Wrapper(nn.Module):
 #         self.encoder = im2spec(in_dim, target_size=1, latent_dim = 64).encoder
 #         self.fc1 = nn.Linear(64, 32)
 #         self.fc2 = nn.Linear(32, 1)
-        
+
 #     def forward(self, x):
 
 #         x = x.unsqueeze(1)
@@ -73,7 +83,7 @@ class Encoder_Wrapper(nn.Module):
 #         x = F.relu(self.fc2(x))
 
 #         return x.reshape(-1)
-    
+
 #     def to(self, device):
 #         for param in self.parameters():
 #             param.data = param.data.to(device)
@@ -82,7 +92,7 @@ class Encoder_Wrapper(nn.Module):
 
 
 
-        
+
 class error_model(nn.Module):
     """
     Encoder (2D) - decoder (1D) type model for generating spectra from image
@@ -93,34 +103,35 @@ class error_model(nn.Module):
                  latent_dim: int = 32,
                  nb_filters_enc: int = 128,
                  nb_filters_dec: int = 64) -> None:
-        
+
+        """Initialize error_model."""
         super().__init__()
-        
+
         self.n, self.m = feature_size
-        
+
         self.ts = target_size
-        
+
         self.e_filt = nb_filters_enc
-        
+
         self.d_filt = nb_filters_dec
         # Encoder params
-        
+
         self.enc_conv = conv_block(
             ndim=2, nb_layers=3,
             input_channels=1, output_channels=self.e_filt,
             lrelu_a=0.1, batch_norm=True, dropout_ = 0.1)
-        
+
         self.enc_fc = nn.Linear(self.e_filt * self.n * self.m, latent_dim)
         # Decoder params
-        
+
         self.dec_fc1 = nn.Linear(latent_dim, 32 )
         self.dec_fc2 = nn.Linear(32, 16 )
         self.dec_fc3 = nn.Linear(16, 8)
-        self.dec_fc4 = nn.Linear(8, 1) 
-        
- 
-        
-       
+        self.dec_fc4 = nn.Linear(8, 1)
+
+
+
+
     def encoder(self, features: torch.Tensor) -> torch.Tensor:
         """
         The encoder embeddes the input image into a latent vector
@@ -137,9 +148,9 @@ class error_model(nn.Module):
         x = F.relu(self.dec_fc1(encoded))
         x = F.relu(self.dec_fc2(x))
         x = F.relu(self.dec_fc3(x))
-        x = F.relu(self.dec_fc4(x))  
-        
-        
+        x = F.relu(self.dec_fc4(x))
+
+
         return x.reshape(-1, self.ts)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
@@ -147,89 +158,103 @@ class error_model(nn.Module):
         x = x.unsqueeze(1)
         encoded = self.encoder(x)
         return self.decoder(encoded)
-    
+
     def predict(self, x: torch.Tensor) -> torch.Tensor:
         """Predict spectra from image"""
 
         with torch.no_grad():
             return self.forward(x)
 
-        
-        
+
+
 
 class ensemble_error_model(nn.Module):
 
+    """Container for an ensemble of error-prediction models."""
     def __init__(self, in_dim, n_models, model = error_model):
+        """Initialize ensemble_error_model."""
         super().__init__()
 
         self.models = [model(in_dim) for i in range(n_models)]
-        
+
     def forward(self, x):
 
+        """Run the forward pass."""
         ensemble_error = [model(x) for model in self.models]
 
         return ensemble_error
-    
+
     def predict(self, x):
 
+        """Run prediction for input tensors."""
         [model.eval() for model in self.models]
 
         with torch.no_grad():
             return self.forward(x)
-        
+
     def train(self):
-        
+
+        """Set contained model modules to training mode."""
         [model.train() for model in self.models]
-    
+
     def eval(self):
 
+        """Set contained model modules to evaluation mode."""
         [model.eval() for model in self.models]
 
     def to(self, device):
-        
+
+        """Move contained model modules to a device or dtype."""
         [model.to(device) for model in self.models]
-        
-        
-        
+
+
+
 
 
 class DecoderModule(nn.Module):
+    """Decoder module used with a frozen or shared encoder."""
     def __init__(self, embed_dim, target_size=1):
-        
+
+        """Initialize DecoderModule."""
         super(DecoderModule, self).__init__()
-        
+
         self.ts = target_size
-        
+
         self.dec_fc1 = nn.Linear(embed_dim, 32)
         self.dec_fc2 = nn.Linear(32, 16)
         self.dec_fc3 = nn.Linear(16, 8)
         self.dec_fc4 = nn.Linear(8, target_size)
 
     def forward(self, embedding):
-        
+
+        """Run the forward pass."""
         x = F.relu(self.dec_fc1(embedding))
         x = F.relu(self.dec_fc2(x))
         x = F.relu(self.dec_fc3(x))
         x = self.dec_fc4(x)
-        
+
         return x.reshape(-1, self.ts)
-            
-            
-        
+
+
+
 class CustomDecoder(nn.Module):
+    """Decoder head attached to an existing encoder."""
     def __init__(self, encoder, embed_dim, target_size=1):
+        """Initialize CustomDecoder."""
         super(CustomDecoder, self).__init__()
         self.encoder = encoder
         self.decoder = DecoderModule(embed_dim, target_size)  # Now a module
 
     def forward(self, x):
+        """Run the forward pass."""
         x = x.unsqueeze(1)
         embedding = self.encoder(x)
         return self.decoder(embedding)
 
     def train_only_decoder(self):
-        
+
         # Freeze encoder params
+        """Freeze encoder parameters and train only decoder parameters."""
         self.encoder.eval()
         for param in self.encoder.parameters():
             param.requires_grad = False
@@ -237,7 +262,7 @@ class CustomDecoder(nn.Module):
         self.decoder.train()
         for param in self.decoder.parameters():
             param.requires_grad = True
-            
+
     def predict(self, x: torch.Tensor):
         """Predict spectra from image"""
 
