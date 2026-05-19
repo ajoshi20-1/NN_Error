@@ -1,0 +1,17 @@
+LICENSE
+README.md
+pyproject.toml
+src/nnerror/__init__.py
+src/nnerror/plot_functions.py
+src/nnerror/training_functions.py
+src/nnerror.egg-info/PKG-INFO
+src/nnerror.egg-info/SOURCES.txt
+src/nnerror.egg-info/dependency_links.txt
+src/nnerror.egg-info/requires.txt
+src/nnerror.egg-info/top_level.txt
+src/nnerror/networks/__init__.py
+src/nnerror/networks/im2spec_models.py
+src/nnerror/networks/neuralop_im2spec.py
+src/nnerror/networks/nn_combiners.py
+src/nnerror/utils/__init__.py
+src/nnerror/utils/image_utils.py
