@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "nnerror"
+version = "0.1.0"
+description = "Neural-network error estimation tools for image-to-spectroscopy learning in microscopy"
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [{ name = "Ganesh Narasimha" }]
+requires-python = ">=3.10"
+dependencies = [
+    "torch",
+    "atomai",
+    "neuraloperator",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]

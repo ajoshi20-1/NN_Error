@@ -1,5 +1,6 @@
 to_ignore/
 __pycache__/
+.claude/
 .ipynb_checkpoints/
 .venv/
 *.png

@@ -94,7 +94,7 @@ NN_Error/
 
 BEPS data: Yongtao Liu, ORNL
 
-STM data: Dejia Kong (ORNL, UVA), Zheng Gai (ORNL)
+STM data: Dejia Kong (ORNL, PNNL), Zheng Gai (ORNL).
 
 Feedback and inputs: Rama Vasudevan, ORNL
 
