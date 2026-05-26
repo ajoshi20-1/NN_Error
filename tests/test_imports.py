@@ -91,7 +91,13 @@ def test_plot_functions():
 
 def test_utils():
     from nnerror import (
+        AddGaussianNoise,
+        Error_Dataset,
         append_multiscale_data,
+        augmented_dataset,
         edges_zeroed_image,
+        im2spec_Dataset,
         interpolated_center_crop,
+        paired_images_spectra,
+        paired_images_spectra_1,
     )

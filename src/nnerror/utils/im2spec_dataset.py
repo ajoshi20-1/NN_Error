@@ -1,21 +1,17 @@
-
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
-import random
-import cv2
-
-from torch.utils.data import DataLoader, Dataset, ConcatDataset
-
 import numpy as np
-import matplotlib.pyplot as plt
-from stm_utils import Sxm_Image
-from CITS_Class import CITS_Analysis
-from torch.utils.data import DataLoader, Dataset
-import torchvision.transforms as transforms
+import torch
+from atomai.utils import get_coord_grid, extract_subimages
+from torch.utils.data import ConcatDataset, Dataset
 
-import atomai as aoi
-from atomai.utils import get_coord_grid, extract_patches_and_spectra, extract_patches, extract_subimages
+__all__ = [
+    "AddGaussianNoise",
+    "Error_Dataset",
+    "augmented_dataset",
+    "im2spec_Dataset",
+    "norm_0to1",
+    "paired_images_spectra",
+    "paired_images_spectra_1",
+]
 
 
 class im2spec_Dataset(Dataset):
@@ -82,6 +78,8 @@ def augmented_dataset(images, spectra):
     Returns:
         `ConcatDataset` containing three image-to-spectrum datasets.
     """
+    import torchvision.transforms as transforms
+
     dataset1 = im2spec_Dataset(images, spectra)
 
 
@@ -160,11 +158,13 @@ class Error_Dataset(Dataset):
         return image, error
 
 
-def paired_images_spectra(image, hyperspectra, window_size = 30, coordinate_step = 10, image_norm = False, spectra_norm = False):
+def paired_images_spectra(image, hyperspectra, window_size = 30, coordinate_step = 10, image_norm = False, 
+                          spectra_norm = False):
 
 
     """
     Pair image patches with spectra sampled on a resized hyperspectral grid.
+    Use for BEPS data.
 
     The hyperspectral cube is resized in each spectral channel to match the
     square grid implied by the extracted patches, then flattened into one
@@ -183,6 +183,7 @@ def paired_images_spectra(image, hyperspectra, window_size = 30, coordinate_step
         shape `(N, window_size, window_size)`, `training_spectra` has shape
         `(N, S)`, and `coordinates` contains patch-center coordinates.
     """
+    import cv2
 
     coords = get_coord_grid(image, step = coordinate_step, return_dict= False)
     #print('initial coordinates = ',coords[:, 0].shape)
@@ -223,11 +224,12 @@ def paired_images_spectra(image, hyperspectra, window_size = 30, coordinate_step
     return patches, training_spectra, coordinates
 
 
-def paired_images_spectra_1(image, cits_obj, hyperspectra, window_size = 30, coordinate_step = 10, image_norm = False, spectra_norm = False):
+def paired_images_spectra_1(image, cits_obj, hyperspectra, window_size = 30, coordinate_step = 10, 
+                            image_norm = False, spectra_norm = False):
 
 
     """
-    Pair image patches with the nearest measured CITS spectrum.
+    Pair image patches with the nearest measured CITS spectrum. Use for STM data.
 
     Patch-center image coordinates are converted to the CITS frame size, then
     matched to the nearest measured CITS point before retrieving spectra.

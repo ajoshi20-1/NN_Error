@@ -36,9 +36,15 @@ from .training_functions import (
 	vae_loss_mse,
 )
 from .utils import (
+	AddGaussianNoise,
+	Error_Dataset,
 	append_multiscale_data,
+	augmented_dataset,
 	edges_zeroed_image,
+	im2spec_Dataset,
 	interpolated_center_crop,
+	paired_images_spectra,
+	paired_images_spectra_1,
 )
 
 __all__ = [
@@ -78,7 +84,13 @@ __all__ = [
 	"train_model",
 	"train_model_ensemble",
 	"vae_loss_mse",
+	"AddGaussianNoise",
+	"Error_Dataset",
 	"append_multiscale_data",
+	"augmented_dataset",
 	"edges_zeroed_image",
+	"im2spec_Dataset",
 	"interpolated_center_crop",
+	"paired_images_spectra",
+	"paired_images_spectra_1",
 ]

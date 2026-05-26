@@ -31,9 +31,11 @@ STM multiscale image-to-spectrum workflow using `.sxm` morphology data and `.3ds
 ## Helper Scripts
 
 - `BEPS_functions.py`: BEPS `.npz` loading and image/spectrum pair extraction.
-- `im2spec_dataset.py`: PyTorch datasets and augmentation helpers used by the notebooks.
 - `stm_utils.py`: STM `.sxm` loading and image correction helpers.
 - `CITS_Class.py`: CITS `.3ds` loading and spatial/voltage lookup helpers.
+
+PyTorch datasets and image/spectrum pairing helpers are now provided by
+`nnerror.utils.im2spec_dataset`.
 
 ## Data
 
