@@ -1,4 +1,8 @@
-torch
 atomai
 neuraloperator
 hoffmanstmpy
+
+
+#interactive matplotlib backend for notebooks
+ipympl
+ipywidgets
