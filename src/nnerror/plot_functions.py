@@ -343,7 +343,7 @@ def plot_latent_space(embeddings, trained_embeddings = None, expt_name = 'test_e
     ax.scatter(l1, l2, l3, alpha=0.2)  # edgecolors='#1f77b4
 
 
-    ax.set_title('Latent space')
+    ax.set_title(f'Latent space, scale = {scale}')
 
 #     # Remove axis numbers (ticks)
 #     ax.set_xticks([])
@@ -465,7 +465,7 @@ def cluster_latent_space(embeddings, lat_order = [0, 1, 2],  n_clusters = 2):
         ax.scatter(embeddings[labels == i,lat_order[0]], embeddings[labels == i, lat_order[1]], embeddings[labels == i, lat_order[2]],
                color=colors[i], label=f'Cluster {i}', alpha=0.6, edgecolors='k')
 
-    ax.set_title('Latent space')
+    ax.set_title('Latent space, scale = {scale}')
 
 #     # Remove axis numbers (ticks)
 #     ax.set_xticks([])
