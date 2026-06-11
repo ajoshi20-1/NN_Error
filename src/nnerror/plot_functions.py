@@ -343,7 +343,7 @@ def plot_latent_space(embeddings, trained_embeddings = None, expt_name = 'test_e
     ax.scatter(l1, l2, l3, alpha=0.2)  # edgecolors='#1f77b4
 
 
-    ax.set_title('Latent space')
+    ax.set_title(f'Latent space, scale = {int(s)}')
 
 #     # Remove axis numbers (ticks)
 #     ax.set_xticks([])
